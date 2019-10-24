@@ -192,6 +192,12 @@ images.shape
 model0 = MLP()
 model0.fit(images, labels, epochs=10, batch_size=200, verbose=2);
 
+{
+    "tags": [
+        "remove_output",
+    ]
+}
+
 
 # In[17]:
 
@@ -208,7 +214,7 @@ np.savetxt('submission_MLP.csv', np.c_[range(1,len(test)+1),pred], delimiter=','
 
 # ****
 # ### Now, I'll try to make a IRIS-Flower Classification on my own, so I can apply what I learned from the previous work
-# **If you don't know the Iris-Flower Dataset, I recomend you to see the link: [Iris-Flower Dataset](https://www.kaggle.com/arshid/iris-flower-dataset)**
+# **If you don't know what's the Iris-Flower Dataset, I recomend you to see the link: [Iris-Flower Dataset](https://www.kaggle.com/arshid/iris-flower-dataset)**
 
 # ## Imports & Setup
 
@@ -217,7 +223,7 @@ np.savetxt('submission_MLP.csv', np.c_[range(1,len(test)+1),pred], delimiter=','
 
 from sklearn.model_selection import train_test_split
 import keras
-keras.optimizers.Adam()
+keras.optimizers.Adam() # Setup with default params
 keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=7)
 url="https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv"
 
@@ -250,13 +256,6 @@ for i in range(0,4):
 X[:2]
 
 
-# In[23]:
-
-
-# Let's split our data in test and train with test size = 20%
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
-
-
 # **We also need to convert our classes y to numbers**
 
 # In[24]:
@@ -272,7 +271,14 @@ def classconverter(typ):
         return 2
 
 
-# - For some reason, I splitted before convert. I'll fix it
+# - For some reason, I splitted before convert. I'll fix it later
+
+# In[23]:
+
+
+# Let's split our data in test and train with test size = 20%
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+
 
 # In[25]:
 
@@ -296,7 +302,7 @@ print('train',X_train[0],'\n',y_train[0])
 print('\ntest',X_test[0],'\n',y_test[0])
 
 
-# **Everything seems OK**
+# **Everything is OK**
 
 # **Now I'm ready to create my MLP**  
 # - Notice that I let 3 hidden layers as optional, so I can try models with 1 to 4 hidden layers without rebuild all the MLP
@@ -354,7 +360,9 @@ def graph(hist):
 
 # First model 1 hidden layer = 12 neurons
 model1 = Iris_MLP(h1=12)
-hist1 = model1.fit(X_train, y_train, epochs=5000, verbose=2)
+hist1 = model1.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist1.history['loss'][-1])
+print(hist1.history['accuracy'][-1])
 
 
 # In[30]:
@@ -370,7 +378,9 @@ graph(hist1)
 
 # Second Model 2 Hidden layers with 4 neurons each
 model2 = Iris_MLP(h1=4,h2=4)
-hist2 = model2.fit(X_train, y_train, epochs=5000, verbose=2)
+hist2 = model2.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist2.history['loss'][-1])
+print(hist2.history['accuracy'][-1])
 
 
 # In[32]:
@@ -379,14 +389,14 @@ hist2 = model2.fit(X_train, y_train, epochs=5000, verbose=2)
 graph(hist2)
 
 
-# - End Accuracy is not the max accuracy. Loss greater than 1st model
-
 # In[33]:
 
 
 # Third model = 3 Hidden layers with 8 neurons each
 model3 = Iris_MLP(h1=8,h2=8,h3=8)
-hist3 = model3.fit(X_train, y_train, epochs=5000, verbose=2)
+hist3 = model3.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist3.history['loss'][-1])
+print(hist3.history['accuracy'][-1])
 
 
 # In[34]:
@@ -394,6 +404,8 @@ hist3 = model3.fit(X_train, y_train, epochs=5000, verbose=2)
 
 graph(hist3)
 
+
+# - Ocillating Loss
 
 # ### Evaluating our models
 
@@ -409,130 +421,174 @@ model1.evaluate(X_test,y_test,verbose=2)
 model2.evaluate(X_test,y_test,verbose=2)
 
 
+# For now, i think the Loss stills big
+
 # In[37]:
 
 
 model3.evaluate(X_test,y_test,verbose=2)
 
 
-# **Until now, I have - Max Acc = 0.933**
-
 # ### Another Tests
-# **Here I'll try different models.  
-# To keep the notebook clear, I'll remove some outputs**
+# **Here I'll try different models.**
 
-# In[ ]:
+# In[56]:
 
 
 # 3 Hidden Layers 4-8-4 Neurons
 model4 = Iris_MLP(h1=4,h2=8,h3=4)
-model4.fit(X_train, y_train, epochs=5000, verbose=2)
+hist4 = model4.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist4.history['loss'][-1])
+print(hist4.history['accuracy'][-1])
 
 
-# In[39]:
+# In[57]:
 
 
 model4.evaluate(X_test,y_test,verbose=2)
 
 
+# In[58]:
+
+
+graph(hist4)
+
+
 # ****
 
-# In[ ]:
+# In[41]:
 
 
 # 3 Hidden Layers 12 Neurons each
 model5 = Iris_MLP(h1=12,h2=12,h3=12)
-model5.fit(X_train, y_train, epochs=5000, verbose=2)
+hist5 = model5.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist5.history['loss'][-1])
+print(hist5.history['accuracy'][-1])
 
 
-# In[41]:
+# In[42]:
 
 
 model5.evaluate(X_test,y_test,verbose=2)
 
 
+# In[43]:
+
+
+graph(hist5)
+
+
 # ****
 
-# In[ ]:
+# In[44]:
 
 
 # 4 Hidden Layers, 12 neurons each
 model6 = Iris_MLP(h1=12,h2=12,h3=12,h4=12)
-model6.fit(X_train, y_train, epochs=5000, verbose=2)
-
-
-# In[43]:
-
-
-model6.evaluate(X_test,y_test,verbose=2)
-
-
-# ****
-
-# In[ ]:
-
-
-# 2 Hidden Layers, 8 neurons each (also 4 times more epochs)
-model7 = Iris_MLP(h1=8,h2=8)
-model7.fit(X_train, y_train, epochs=20000, verbose=2)
+hist6 = model6.fit(X_train, y_train, epochs=3000, verbose=0)
+print(hist6.history['loss'][-1])
+print(hist6.history['accuracy'][-1])
 
 
 # In[45]:
 
 
-model7.evaluate(X_test,y_test,verbose=2)
+model6.evaluate(X_test,y_test,verbose=2)
+
+
+# In[46]:
+
+
+graph(hist6)
 
 
 # ****
 
-# In[ ]:
-
-
-# 2 Hidden Layers with 120 neurons
-model8 = Iris_MLP(h1=120,h2=120)
-hist8 = model8.fit(X_train, y_train, epochs=10000, verbose=2)
-
-
 # In[47]:
 
 
-model8.evaluate(X_test,y_test,verbose=2)
+#
+model7 = Iris_MLP(h1=2)
+hist7 = model7.fit(X_train, y_train, epochs=5000, verbose=0)
+print(hist7.history['loss'][-1])
+print(hist7.history['accuracy'][-1])
 
-
-# **I discover that model8 is better than model 2, let's print the graph**
 
 # In[48]:
 
 
-graph(hist8)
+model7.evaluate(X_test,y_test,verbose=2)
 
 
-# - Strange graph. Overfitting ?
-
-# **Let's try to predict some flowers**
+# min loss = 0.0847 with 1 Hlayer of 2 neurons with 96.66% acc
 
 # In[49]:
 
 
-model8.predict_classes(np.array([[0.86, 0.68, 0.79, 0.84]])) ## Class = 1
+graph(hist7)
 
+
+# ****
 
 # In[50]:
 
 
-model8.predict_classes(np.array([[0.60, 0.68, 0.20, 0.04]])) ## class = 0
+# 2 Hidden Layers with 120 neurons, now with sgd optimizer
+model8 = Iris_MLP(h1=120,h2=120)
+hist8 = model8.fit(X_train, y_train, epochs=10000, verbose=0)
+print(hist8.history['loss'][-1])
+print(hist8.history['accuracy'][-1])
 
 
 # In[51]:
 
 
+model8.evaluate(X_test,y_test,verbose=2)
+
+
+# **I discover that model8 is better than all others.  
+# Loss stills big imo.  
+# Let's print the graph.**
+
+# In[52]:
+
+
+graph(hist8)
+
+
+# - Overfitting ?
+
+# **Let's try to predict some flowers**
+
+# In[53]:
+
+
+model8.predict_classes(np.array([[0.86, 0.68, 0.79, 0.84]])) ## Class = 1
+
+
+# In[54]:
+
+
+model8.predict_classes(np.array([[0.60, 0.68, 0.20, 0.04]])) ## class = 0
+
+
+# In[55]:
+
+
 model8.summary()
 
 
-# **Somehow it works. But I don't think this is safe.**
-
 # **I'll end this Notebook here.  
-# I could learn a lot during development and now I discovered somethings that I have to understand better before start the RNN practice.**  
-# **I also intend to talk with some experient Data Scientist, to have a feedback. I hardly recommend you to do it if you're starting.**
+# I could learn a lot during development and now I discovered somethings that I have to understand better before start the RNN practice.  
+# I intend to fix all this notebook later, when I learn more.  
+# I also intend to talk with some experient Data Scientist, to have a feedback. I hardly recommend you to do it if you're starting.**
 # ****
-# **You can find more of my studies in my [Github](https://github.com/ViniciusRFerraz). Thanks for reading**
+# **You can find more of my studies in my [Github](https://github.com/ViniciusRFerraz).**  
+# 
+# **Thanks for reading**
+
+# In[ ]:
+
+
+
+
