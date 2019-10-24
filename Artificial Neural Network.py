@@ -586,9 +586,3 @@ model8.summary()
 # **You can find more of my studies in my [Github](https://github.com/ViniciusRFerraz).**  
 # 
 # **Thanks for reading**
-
-# In[ ]:
-
-
-
-
