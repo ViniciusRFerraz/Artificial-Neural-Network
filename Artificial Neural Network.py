@@ -24,6 +24,30 @@
 # The Last layer is called Output Layer  
 # The layers between them are the Hidden Layers**
 
+# **Loss Function: Metric used to describe how badly the model is performing.**
+# * **We have to find the best paramethers that minimizes the Loss Function.**
+# 
+# **Gradient Descent: Used to minimize the Loss Function.**
+# * **Gradient Descent moves the paramethers for the direction where the Loss Function decreases**
+# 
+# **Backpropagation: The gradient we need to update an earlier layer can be expressed as a simple function of the gradient in the layeres after it.**
+# * **Grad_layer1 = F(grad_layer2).**
+# * **Grad_layer2 - F(grad_layer3)...**
+# * **For that reason we can start the calculation in the last layer, then we can propagate it backs to the previous and so on. This is called Backpropagation, since we propagates backwards our calculations from layer N to layer 1.**
+# 
+# **Overfitting: The model fits so well the training set that it fails to generalize to unseen examples**
+# * **Solutions:**
+#     * **L2 Regularization:**
+#         * **Penalize extra large parameters: New_Loss = Training_Loss + lambda * ||w||²**
+#         * **Squared value of parameters grows up as parameters grows up.**
+#     * **Early Stopping:**
+#         * **Take the point where the dev_Loss (test_Loss) is the lowest (not the train_loss)**
+#     * **Dropout:**
+#         * **Drop Neurons of the network randomly. Since the model doesn't know which Neuron will be dropped out, it's forced to not overly on key neurons**
+#         
+# **Hyper-Parameters: Number of hidden layers, Neurons per layer, activon function.  
+# We need to search for the hyper-parameters that perform better on our validation set.**
+
 #  ## This is my first Neural Network
 
 # **First of all, I'll find some work to take as base, so i can learn the process and apply it for myself later.**
@@ -46,7 +70,7 @@
 #!pip install tensorflow
 
 
-# In[2]:
+# In[5]:
 
 
 import numpy as np
@@ -61,7 +85,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # ## Getting and Knowing Data
 
-# In[3]:
+# In[6]:
 
 
 # importing train and test files with pandas
@@ -69,26 +93,26 @@ train = pd.read_csv("train.csv")
 test = pd.read_csv("test.csv")
 
 
-# In[4]:
+# In[7]:
 
 
 # How our data looks
 train.head(3)
 
 
-# In[5]:
+# In[8]:
 
 
 test.head(3)
 
 
-# In[6]:
+# In[9]:
 
 
 train.shape
 
 
-# In[7]:
+# In[10]:
 
 
 test.shape
@@ -98,7 +122,7 @@ test.shape
 
 # ## Pre-Processing
 
-# In[8]:
+# In[11]:
 
 
 # Fixing random values for future reprodutions
@@ -106,7 +130,7 @@ seed = 7
 np.random.seed(seed)
 
 
-# In[9]:
+# In[12]:
 
 
 # Getting the pixels
@@ -115,6 +139,7 @@ images = images.astype(np.float) #setting type as float
 
 # Getting the labels
 labels = train.iloc[:,0].values
+labels
 
 
 # **Normalizing the pixel values to the range 0-1**
@@ -307,7 +332,7 @@ print('\ntest',X_test[0],'\n',y_test[0])
 # **Now I'm ready to create my MLP**  
 # - Notice that I let 3 hidden layers as optional, so I can try models with 1 to 4 hidden layers without rebuild all the MLP
 
-# In[27]:
+# In[1]:
 
 
 def Iris_MLP(h1,h2=None,h3=None,h4=None):
@@ -316,7 +341,7 @@ def Iris_MLP(h1,h2=None,h3=None,h4=None):
     
     # Required Hidden Layer
     model.add(Dense(h1, input_dim=4, kernel_initializer="RandomNormal", activation="relu"))
-    
+
     # Optional Hidden Layers
     if h2 is not None:
         model.add(Dense(h2, input_dim=4, kernel_initializer="RandomNormal", activation="relu"))
@@ -336,7 +361,7 @@ def Iris_MLP(h1,h2=None,h3=None,h4=None):
 
 # **I'll create a graph function to plot future models**
 
-# In[28]:
+# In[2]:
 
 
 def graph(hist):
@@ -355,7 +380,7 @@ def graph(hist):
 # **Let's Go to the models. First of all, I'll create 3 initial models. Then i'll look how they are going.**  
 # **In this process, I also will discover the hyperparameters in a exploratory way, so i can learn how they work on pratice and what effects they make to the Network.**
 
-# In[29]:
+# In[3]:
 
 
 # First model 1 hidden layer = 12 neurons
